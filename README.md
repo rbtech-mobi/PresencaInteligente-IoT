@@ -1,0 +1,1 @@
+# Presença Inteligente via MQTT
