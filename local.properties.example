@@ -1,0 +1,7 @@
+## Android SDK location
+sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
+
+## HiveMQ Cloud Credentials (CONFIGURE COM SEUS DADOS)
+mqtt.user=YOUR_MQTT_USER
+mqtt.pass=YOUR_MQTT_PASSWORD
+mqtt.host=ssl://YOUR_CLUSTER_ID.s1.eu.hivemq.cloud:8883

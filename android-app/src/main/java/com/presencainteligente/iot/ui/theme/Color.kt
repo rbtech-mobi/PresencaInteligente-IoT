@@ -1,4 +1,4 @@
-package com.seuprojeto.mqttmobileiot.ui.theme
+package com.presencainteligente.iot.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

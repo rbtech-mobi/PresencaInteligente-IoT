@@ -1,4 +1,4 @@
-package com.seuprojeto.mqttmobileiot.ui.theme
+package com.presencainteligente.iot.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -52,7 +52,7 @@ fun MqttMobileIotTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = com.presencainteligente.iot.ui.theme.Typography,
         content = content
     )
 }

@@ -1,23 +1,21 @@
+# Android Studio / IntelliJ
+.idea/
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+.gradle/
+build/
+capture/
+
+# Credenciais (REQUISITO: Isolamento de segredos)
+local.properties
+secrets.h
+
+# Kotlin / Java
+*.class
+*.log
+
+# Telemetria (Exportações acadêmicas)
+*.csv
+telemetry_*.csv
+
+# Sistema
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
-
-# --- Segurança do App Android ---
-# Ignora o arquivo onde colocaremos o usuário/senha do HiveMQ e o SSID do Wi-Fi
-local.properties
-
-# --- Segurança do Firmware ESP32 ---
-# Ignora o arquivo de cabeçalho com as credenciais da placa
-firmware-iot/secrets.h

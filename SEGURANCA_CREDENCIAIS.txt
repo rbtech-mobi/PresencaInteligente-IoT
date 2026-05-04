@@ -1,0 +1,194 @@
+================================================================================
+SEGURANÇA DE CREDENCIAIS - MQTT IoT PROJECT
+================================================================================
+
+STATUS ATUAL: ✅ SEGURO (Local.properties NÃO está no git)
+
+COMO AS CREDENCIAIS ESTÃO ARMAZENADAS
+======================================
+
+1. LOCAL.PROPERTIES (Arquivo Local - NÃO publicado)
+   ├─ Localização: /projeto/local.properties
+   ├─ Status: ✅ Adicionado ao .gitignore
+   ├─ Conteúdo:
+   │   mqtt.user = YOUR_MQTT_USER
+   │   mqtt.pass = YOUR_MQTT_PASSWORD
+   │   mqtt.host = ssl://YOUR_CLUSTER_ID.s1.eu.hivemq.cloud:8883
+   └─ Acesso: Apenas no build time via BuildConfig
+
+2. BUILD CONFIG (Gerado em tempo de build)
+   ├─ Arquivo: build.gradle.kts (linha 28-30)
+   ├─ Código:
+   │   buildConfigField("String", "MQTT_USER", "\"${properties.getProperty("mqtt.user")}\"")
+   │   buildConfigField("String", "MQTT_PASS", "\"${properties.getProperty("mqtt.pass")}\"")
+   │   buildConfigField("String", "MQTT_HOST", "\"${properties.getProperty("mqtt.host")}\"")
+   └─ Resultado: Compiladas no APK como constantes
+
+3. CÓDIGO FONTE (MqttRepository.kt)
+   └─ Uso:
+      private val host: String = BuildConfig.MQTT_HOST
+      val userName = BuildConfig.MQTT_USER
+      val password = BuildConfig.MQTT_PASS
+
+
+FLUXO SEGURO DE CREDENCIAIS
+============================
+
+Developer Local:
+  local.properties (com dados REAIS)
+      ↓
+  ./gradlew build
+      ↓
+  BuildConfig.kt (gerado, NÃO commitado)
+      ↓
+  APK debug (contém credenciais)
+
+
+CI/CD (Futuro):
+  GitHub Secrets (CI_MQTT_USER, etc)
+      ↓
+  build.gradle.kts lê variáveis de ambiente
+      ↓
+  BuildConfig.kt (gerado com valores do CI)
+      ↓
+  APK release (contém credenciais)
+
+
+PROTOCOLO DE SEGURANÇA
+======================
+
+✅ O QUE É FEITO CERTO:
+  ✓ local.properties no .gitignore
+  ✓ Credenciais carregadas em BUILD TIME
+  ✓ NÃO armazenadas em SharedPreferences
+  ✓ NÃO visíveis no código-fonte
+  ✓ BuildConfig.java NÃO é versionado
+  ✓ local.properties.example fornece template
+
+⚠️  CUIDADOS NECESSÁRIOS:
+  ⚠️  APK contém credenciais (descompilável)
+  ⚠️  Não use em app production pública
+  ⚠️  Use tokens temporários se possível
+  ⚠️  Em produção, considere servidor intermediário
+
+
+SETUP PARA NOVOS DESENVOLVEDORES
+=================================
+
+1. Clone o repositório:
+   $ git clone <repo>
+   $ cd MqttMobileIot
+
+2. Crie local.properties baseado no template:
+   $ cp local.properties.example local.properties
+
+3. Edite com seus dados REAIS:
+   # local.properties
+   sdk.dir=/seu/android/sdk
+   mqtt.user=SEU_USER
+   mqtt.pass=SEU_PASSWORD
+   mqtt.host=ssl://SEU_CLUSTER_ID.s1.eu.hivemq.cloud:8883
+
+4. Compile:
+   $ ./gradlew clean build
+
+5. Pronto! Credenciais carregadas automaticamente
+
+
+VERIFICAÇÃO DE SEGURANÇA
+========================
+
+✅ local.properties está em .gitignore?
+   $ cat .gitignore | grep "local.properties"
+   Resultado esperado: "local.properties"
+
+✅ BuildConfig não foi commitado?
+   $ git log --all -- "**/BuildConfig.java"
+   Resultado esperado: (nenhum)
+
+✅ Credenciais não estão no código?
+   $ grep -r "mqtt.user\|mqtt.pass\|mqtt.host" src/ | grep -v "BuildConfig"
+   Resultado esperado: (nenhum)
+
+
+PARA AMBIENTE PRODUCTION
+=======================
+
+NÃO USE ESSA ABORDAGEM em:
+  ❌ Apps públicas (Google Play Store)
+  ❌ Dados realmente sensíveis
+  ❌ Produção sem proteção
+
+USE ALTERNATIVAS em produção:
+  ✓ API intermediária (seu servidor autentica)
+  ✓ OAuth 2.0 com tokens temporários
+  ✓ Firebase Authentication
+  ✓ Secure Enclave / Keystore Android
+  ✓ Token refresh periódico
+
+
+ESTRUTURA RECOMENDADA EM PRODUÇÃO
+==================================
+
+App Android:
+  1. User faz login (email/senha)
+  2. Servidor autentica e emite JWT token
+  3. App usa JWT para se conectar ao MQTT
+  4. MQTT usa webhook para validar token
+  5. Token expira em 1h (refresh automático)
+
+Vantagens:
+  ✓ Credenciais MQTT nunca no APK
+  ✓ Fácil revogar acesso
+  ✓ Auditoria de login
+  ✓ Escalável para múltiplos usuários
+
+
+LIMPEZA DO HISTÓRICO GIT (SE NECESSÁRIO)
+========================================
+
+Se credenciais foram acidentalmente commitadas:
+
+1. Remover do histórico git:
+   $ git filter-branch --tree-filter 'rm -f local.properties' HEAD
+
+2. Force push (cuidado!):
+   $ git push origin main --force
+
+3. Notificar todos os devs para:
+   $ git fetch
+   $ git rebase origin/main
+
+4. Mudar credenciais imediatamente no broker MQTT!
+
+
+CHECKLIST DE SEGURANÇA
+======================
+
+Antes de publicar:
+  ☐ local.properties NÃO está no git
+  ☐ local.properties.example existe
+  ☐ .gitignore contém local.properties
+  ☐ Nenhuma credencial em código-fonte
+  ☐ BuildConfig.java não é versionado
+  ☐ README contém instruções de setup
+  ☐ Credenciais testadas localmente
+  ☐ MQTT broker aceita conexões SSL/TLS
+  ☐ Permissões INTERNET concedidas
+
+
+================================================================================
+                      SEGURANÇA IMPLEMENTADA ✅
+================================================================================
+
+Seu projeto está SEGURO:
+✓ Arquivo de credenciais local (não publicado)
+✓ BuildConfig carrega em tempo de build
+✓ .gitignore protege com "local.properties"
+✓ Template (local.properties.example) fornecido
+✓ SSL/TLS em porta 8883
+✓ RuntimePermissions implementadas
+
+Status: PRONTO PARA PRODUÇÃO INTERNA / PROTOTIPAGEM
+
+================================================================================

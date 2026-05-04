@@ -1,4 +1,4 @@
-package com.seuprojeto.mqttmobileiot
+package com.presencainteligente.iot
 
 import org.junit.Test
 
