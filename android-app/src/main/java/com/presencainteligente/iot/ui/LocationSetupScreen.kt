@@ -81,26 +81,6 @@ fun LocationSetupScreen(
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                "Visualizar No Mapa",
-                style = MaterialTheme.typography.titleMedium,
-                color = primaryBlue,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.Start)
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            LocationCanvas(
-                latitude = latitude.toDoubleOrNull() ?: 0.0,
-                longitude = longitude.toDoubleOrNull() ?: 0.0,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp)
-                    .border(2.dp, Color(0xFFE0E0E0), RoundedCornerShape(12.dp))
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
 
             Text(
                 "Coordenadas",
@@ -133,27 +113,6 @@ fun LocationSetupScreen(
                 singleLine = true,
                 supportingText = { Text("ex: -46.6333") }
             )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
-                onClick = {
-                    showMessage = "GPS não implementado neste protótipo"
-                    messageType = "error"
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF90CAF9))
-            ) {
-                Icon(
-                    Icons.Default.MyLocation,
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Usar Localização Atual (GPS)")
-            }
 
             Spacer(modifier = Modifier.height(12.dp))
 
